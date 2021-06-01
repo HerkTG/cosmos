@@ -10,9 +10,9 @@ export class CoreModule {
   readonly config: GraphConfig<Node, Link>
   readonly store: Store
   readonly data: GraphData<Node, Link>
-  readonly points: Points<Node, Link> | undefined
+  readonly points: Points | undefined
 
-  constructor (reglInstance: regl.Regl, config: GraphConfig<Node, Link>, store: Store, data: GraphData<Node, Link>, points?: Points<Node, Link>) {
+  constructor (reglInstance: regl.Regl, config: GraphConfig<Node, Link>, store: Store, data: GraphData<Node, Link>, points?: Points) {
     this.reglInstance = reglInstance
     this.config = config
     this.store = store

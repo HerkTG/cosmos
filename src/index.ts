@@ -29,7 +29,7 @@ export class CosmoGraph<N extends Node, L extends Link> {
   private graph = new GraphData()
   private store = new Store()
   private space: Space
-  private points: Points<N, L>
+  private points: Points
   private lines: Lines
   private forceGravity: ForceGravity
   private forceCenter: ForceCenter
