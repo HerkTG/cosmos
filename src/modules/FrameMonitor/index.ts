@@ -1,0 +1,29 @@
+
+import { select } from 'd3-selection'
+import GLBench from 'gl-bench/dist/gl-bench'
+import { benchCSS } from './css'
+
+export class FrameMonitor {
+  private bench: GLBench | undefined
+
+  constructor (canvas?: HTMLCanvasElement) {
+    if (!canvas) return
+    this.destroy()
+    const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGL2RenderingContext
+    this.bench = new GLBench(gl, { css: benchCSS })
+  }
+
+  public begin (): void {
+    this.bench?.begin('frame')
+  }
+
+  public end (now: number): void {
+    this.bench?.end('frame')
+    this.bench?.nextFrame(now)
+  }
+
+  public destroy (): void {
+    this.bench = undefined
+    select('#gl-bench').remove()
+  }
+}
