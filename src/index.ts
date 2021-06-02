@@ -19,7 +19,7 @@ import { Store, ALPHA_MIN } from '@/graph/modules/Store'
 import { Zoom } from '@/graph/modules/Zoom'
 import { Node, Link, InputNode, InputLink } from '@/graph/types'
 
-export class CosmoGraph<N extends Node, L extends Link> {
+export class Graph<N extends Node, L extends Link> {
   config = new GraphConfig<N, L>()
   private canvas: HTMLCanvasElement
   private reglInstance: regl.Regl
