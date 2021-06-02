@@ -1,7 +1,7 @@
 {
-  "name": "cosmograph",
+  "name": "cosmos",
   "version": "1.0.0",
-  "description": "Cosmo Graph",
+  "description": "Cosmos Graph",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
