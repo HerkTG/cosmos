@@ -4,7 +4,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import glslify from 'rollup-plugin-glslify'
 import typescript from 'rollup-plugin-typescript2'
-import typescriptCompiler from 'typescript'
+import ttypescript from 'ttypescript'
 
 const libraryName = 'index'
 const outputFolder = 'dist'
@@ -33,7 +33,7 @@ export default {
       exclude: 'node_modules/**',
     }),
     typescript({
-      typescript: typescriptCompiler,
+      typescript: ttypescript,
     }),
     alias({
       resolve: ['', '/index.ts', '.ts'],
