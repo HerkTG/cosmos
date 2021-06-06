@@ -1,8 +1,12 @@
 import { color as d3Color } from 'd3-color'
 import _isFunction from 'lodash/isFunction'
 import regl from 'regl'
+import { NumericAccessor, StringAccessor } from './config'
 
-export function getValue (d: any, accessor: any): any {
+export function getValue<Datum> (
+  d: Datum,
+  accessor: NumericAccessor<Datum> | StringAccessor<Datum>
+): any {
   if (_isFunction(accessor)) return accessor(d)
   else return accessor
 }
