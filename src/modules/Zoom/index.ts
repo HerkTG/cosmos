@@ -2,14 +2,14 @@ import { zoom, D3ZoomEvent, ZoomBehavior } from 'd3-zoom'
 import { mat3 } from 'gl-matrix'
 import { Store } from '@/graph/modules/Store'
 
-export class Zoom {
+export class Zoom <Datum> {
   readonly store: Store
-  public eventTransform: any = { k: 1, x: 0, y: 0 }
-  public behavior: ZoomBehavior<HTMLCanvasElement, any> = zoom<HTMLCanvasElement, any>()
+  public eventTransform = { k: 1, x: 0, y: 0 }
+  public behavior: ZoomBehavior<HTMLCanvasElement, Datum> = zoom<HTMLCanvasElement, Datum>()
     .on('start', () => {
       this.isRunning = true
     })
-    .on('zoom', (event: D3ZoomEvent<HTMLCanvasElement, any>) => {
+    .on('zoom', (event: D3ZoomEvent<HTMLCanvasElement, Datum>) => {
       this.eventTransform = event.transform
       const { eventTransform: { x, y, k }, store: { transform, screenSize } } = this
       const w = screenSize[0]

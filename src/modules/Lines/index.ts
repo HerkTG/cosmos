@@ -204,7 +204,7 @@ export class Lines<N extends InputNode, L extends InputLink> extends CoreModule<
     const instancePoints: number[][] = []
     links.forEach(l => {
       const c = getValue(l, config.linkColor) ?? defaultLinkColor
-      const rgba = getRgbaColor(c)
+      const rgba = getRgbaColor(c as string)
       instancePoints.push(rgba)
     })
     this.colorBuffer = reglInstance.buffer(instancePoints)
@@ -212,9 +212,9 @@ export class Lines<N extends InputNode, L extends InputLink> extends CoreModule<
 
   public updateWidth (): void {
     const { reglInstance, config, data: { links } } = this
-    const instancePoints: any[] = []
+    const instancePoints: number[][] = []
     links.forEach(l => {
-      instancePoints.push([getValue(l, config.linkWidth) ?? defaultLinkWidth])
+      instancePoints.push([+(getValue(l, config.linkWidth) ?? defaultLinkWidth)])
     })
     this.widthBuffer = reglInstance.buffer(instancePoints)
   }

@@ -1,5 +1,4 @@
 import regl from 'regl'
-import { getValue } from '@/graph/helper'
 import { CoreModule } from '@/graph/modules/core-module'
 import { ForceLink } from '@/graph/modules/ForceLink'
 import { createColorBuffer } from '@/graph/modules/Points/color-buffer'
@@ -40,8 +39,8 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
     const initialState = new Float32Array(pointsTextureSize * pointsTextureSize * 4)
     for (let i = 0; i < numParticles; ++i) {
       const node = nodes[i]
-      initialState[i * 4 + 0] = getValue(node, (d: any) => d.x) ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
-      initialState[i * 4 + 1] = getValue(node, (d: any) => d.y) ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
+      initialState[i * 4 + 0] = node.x ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
+      initialState[i * 4 + 1] = node.y ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
     }
 
     // Create position buffer
@@ -167,7 +166,7 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
         ratio: () => config.pixelRatio,
         'selection[0]': () => store.selectedArea[0],
         'selection[1]': () => store.selectedArea[1],
-        isClick: (_: any, props: { [key: string]: any }) => props.isClick,
+        isClick: (_, props: { isClick: boolean }) => props.isClick,
       },
     })
   }

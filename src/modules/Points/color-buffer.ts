@@ -13,7 +13,8 @@ export function createColorBuffer <N extends InputNode> (
   const initialState = new Float32Array(textureSize * textureSize * 4)
 
   for (const [i, node] of nodes.entries()) {
-    const rgba = getRgbaColor(getValue(node, colorAccessor) ?? defaultNodeColor)
+    const c = getValue(node, colorAccessor) as string
+    const rgba = getRgbaColor(c ?? defaultNodeColor)
     initialState[i * 4 + 0] = rgba[0]
     initialState[i * 4 + 1] = rgba[1]
     initialState[i * 4 + 2] = rgba[2]

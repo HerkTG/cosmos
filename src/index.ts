@@ -241,7 +241,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
 
   public getNodePositions (): { [key: string]: { x: number; y: number } } {
     const particlePositionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
-    return this.graph.nodes.reduce((acc: { [key: string]: any }, curr, i) => {
+    return this.graph.nodes.reduce<{ [key: string]: { x: number; y: number } }>((acc, curr, i) => {
       acc[curr.id] = {
         x: particlePositionPixels[i * 4 + 0],
         y: particlePositionPixels[i * 4 + 1],

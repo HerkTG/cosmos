@@ -6,7 +6,7 @@ import { NumericAccessor, StringAccessor } from './config'
 export function getValue<Datum> (
   d: Datum,
   accessor: NumericAccessor<Datum> | StringAccessor<Datum>
-): any {
+): string | number | null | undefined {
   if (_isFunction(accessor)) return accessor(d)
   else return accessor
 }

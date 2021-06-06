@@ -1,5 +1,7 @@
 export type InputNode = {
   id: string;
+  x?: number;
+  y?: number;
 }
 
 export type InputLink = {

@@ -56,15 +56,18 @@ export class ForceManyBody<N extends InputNode, L extends InputLink> extends Cor
     this.clearLevelsCommand = reglInstance({
       frag: clearFrag,
       vert: updateVert,
-      framebuffer: (_: any, props: { levelFbo: regl.Framebuffer2D }) => props.levelFbo,
+      framebuffer: (_: regl.DefaultContext, props: { levelFbo: regl.Framebuffer2D }) => props.levelFbo,
       primitive: 'triangle strip',
       count: 4,
       attributes: { quad: createQuadBuffer(reglInstance) },
     })
     this.calculateLevelsCommand = reglInstance({
       frag: calculateLevelFrag,
-      vert: (_: any, props: { levelFbo: regl.Framebuffer2D; matrixSize: number; levelSize: number }) => calculateLevelVert(props.matrixSize, props.levelSize),
-      framebuffer: (_: any, props: { levelFbo: regl.Framebuffer2D }) => props.levelFbo,
+      vert: (
+        _: regl.DefaultContext,
+        props: { levelFbo: regl.Framebuffer2D; matrixSize: number; levelSize: number }
+      ) => calculateLevelVert(props.matrixSize, props.levelSize),
+      framebuffer: (_: regl.DefaultContext, props: { levelFbo: regl.Framebuffer2D }) => props.levelFbo,
       primitive: 'points',
       count: () => data.nodes.length,
       attributes: { indexes: createIndexesBuffer(reglInstance, store.pointsTextureSize) },

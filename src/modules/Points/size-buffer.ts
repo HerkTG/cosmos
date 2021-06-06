@@ -15,7 +15,7 @@ export function createSizeBuffer <N extends InputNode> (
 
   for (let i = 0; i < numParticles; ++i) {
     const size = getValue(nodes[i], sizeAccessor)
-    initialState[i * 4] = size ?? defaultNodeSize
+    initialState[i * 4] = +(size ?? defaultNodeSize)
   }
 
   const initialTexture = reglInstance.texture({
