@@ -3,7 +3,7 @@ import 'd3-transition'
 import { zoomIdentity } from 'd3-zoom'
 import _cloneDeep from 'lodash/cloneDeep'
 import regl from 'regl'
-import { GraphConfig } from '@/graph/config'
+import { GraphConfig, GraphConfigInterface } from '@/graph/config'
 import { getRgbaColor, readPixels } from '@/graph/helper'
 import { ForceCenter } from '@/graph/modules/ForceCenter'
 import { ForceGravity } from '@/graph/modules/ForceGravity'
@@ -19,27 +19,27 @@ import { Store, ALPHA_MIN } from '@/graph/modules/Store'
 import { Zoom } from '@/graph/modules/Zoom'
 import { Node, Link, InputNode, InputLink } from '@/graph/types'
 
-export class Graph<N extends Node, L extends Link> {
-  config = new GraphConfig<N, L>()
+export class Graph<N extends InputNode, L extends InputLink> {
+  config = new GraphConfig<Node<N>, Link<N, L>>()
   private canvas: HTMLCanvasElement
   private reglInstance: regl.Regl
   private requestAnimationFrameId = 0
   private isRightClickMouse = false
 
-  private graph = new GraphData()
+  private graph = new GraphData<N, L>()
   private store = new Store()
-  private space: Space
-  private points: Points
-  private lines: Lines
-  private forceGravity: ForceGravity
-  private forceCenter: ForceCenter
-  private forceManyBody: ForceManyBody
-  private forceLink: ForceLink
-  private forceMouse: ForceMouse
+  private space: Space<N, L>
+  private points: Points<N, L>
+  private lines: Lines<N, L>
+  private forceGravity: ForceGravity<N, L>
+  private forceCenter: ForceCenter<N, L>
+  private forceManyBody: ForceManyBody<N, L>
+  private forceLink: ForceLink<N, L>
+  private forceMouse: ForceMouse<N, L>
   private zoom = new Zoom(this.store)
   private frameMonitor = new FrameMonitor()
 
-  constructor (canvas: HTMLCanvasElement, config?: GraphConfig<N, L>) {
+  constructor (canvas: HTMLCanvasElement, config?: GraphConfigInterface<N, L>) {
     if (config) this.config.init(config)
 
     const w = canvas.clientWidth
@@ -88,15 +88,15 @@ export class Graph<N extends Node, L extends Link> {
     return this.store.simulationIsRunning
   }
 
-  get nodes (): Node[] {
+  get nodes (): Node<N>[] {
     return this.graph.nodes
   }
 
-  get links (): Link[] {
+  get links (): Link<N, L>[] {
     return this.graph.links
   }
 
-  setConfig (config: GraphConfig<N, L>): void {
+  setConfig (config: GraphConfigInterface<N, L>): void {
     const prevConfig = _cloneDeep(this.config)
     this.config.init(config)
     if (prevConfig.linkColor !== this.config.linkColor) this.lines.updateColor()
@@ -112,9 +112,8 @@ export class Graph<N extends Node, L extends Link> {
     if (Object.keys(config).includes('simulation')) this.start()
   }
 
-  setData (data: {nodes: InputNode[]; links: InputLink[]}): void {
-    const { graph } = this
-    graph.setData(data)
+  setData (nodes: InputNode[], links: InputLink[]): void {
+    this.graph.setData(nodes, links)
     this.update()
   }
 
@@ -215,11 +214,11 @@ export class Graph<N extends Node, L extends Link> {
     this.config.simulation.onEnd?.()
   }
 
-  public findNodesById (id: string): Node[] {
+  public findNodesById (id: string): Node<N>[] {
     return this.graph.nodes.filter(node => node.id.toLowerCase().includes(id.toLowerCase()))
   }
 
-  public selectNodeById (node: N): void {
+  public selectNodeById (node: Node<N>): void {
     if (!node) return
     if (typeof node.index === 'undefined') return
     this.points.clickedId = node.index

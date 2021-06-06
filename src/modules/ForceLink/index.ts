@@ -4,8 +4,9 @@ import { CoreModule } from '@/graph/modules/core-module'
 import { forceFrag } from '@/graph/modules/ForceLink/force-spring'
 import { createQuadBuffer } from '@/graph/modules/Shared/buffer'
 import updateVert from '@/graph/modules/Shared/quad.vert'
+import { InputNode, InputLink } from '@/graph/types'
 
-export class ForceLink extends CoreModule {
+export class ForceLink<N extends InputNode, L extends InputLink> extends CoreModule<N, L> {
   public linkFirstIndicesAndAmountFbo: regl.Framebuffer2D | undefined
   public indicesFbo: regl.Framebuffer2D | undefined
   public biasAndStrengthFbo: regl.Framebuffer2D | undefined

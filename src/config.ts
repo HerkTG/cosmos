@@ -1,11 +1,11 @@
 import _isPlainObject from 'lodash/isPlainObject'
 import _merge from 'lodash/merge'
-import { Node, Link } from '@/graph/types'
+import { Node, Link, InputNode, InputLink } from '@/graph/types'
 import { defaultNodeColor, defaultNodeSize, defaultLinkColor, defaultLinkWidth, defaultConfigValues } from '@/graph/variables'
 
 export type NumericAccessor<Datum> = ((d: Datum, i?: number) => number | null) | number | null | undefined
 export type StringAccessor<Datum> = ((d: Datum, i?: number) => string) | string | undefined
-export interface GraphConfigInterface<N extends Node, L extends Link> {
+export interface GraphConfigInterface<N extends InputNode, L extends InputLink> {
   /**
    * Canvas background color.
    * Default value: '#222222'
@@ -129,7 +129,7 @@ export interface GraphConfigInterface<N extends Node, L extends Link> {
      * On tick simulation callback function.
      * Default value: undefined
      */
-    onTick?: (_: any) => void;
+    onTick?: (alpha: number) => void;
     /**
      * On end simulation callback function.
      * Default value: undefined
@@ -154,7 +154,7 @@ export interface GraphConfigInterface<N extends Node, L extends Link> {
      * On click callback function.
      * Default value: undefined
      */
-    onClick?: (_: any) => void;
+    onClick?: (clickedNode: Node<N> | undefined) => void;
   };
 
   /**
@@ -166,7 +166,7 @@ export interface GraphConfigInterface<N extends Node, L extends Link> {
   pixelRatio?: number;
 }
 
-export class GraphConfig<N extends Node, L extends Link> implements GraphConfigInterface<N, L> {
+export class GraphConfig<N extends InputNode, L extends InputLink> implements GraphConfigInterface<Node<N>, Link<N, L>> {
   backgroundColor = '#222222'
   spaceSize = defaultConfigValues.spaceSize
   nodeColor = defaultNodeColor
@@ -192,22 +192,22 @@ export class GraphConfig<N extends Node, L extends Link> implements GraphConfigI
     repulsionFromMouse: 2,
     friction: 0.85,
     onStart: (): void => undefined,
-    onTick: (_: any): void => undefined,
+    onTick: (_: number): void => undefined,
     onEnd: (): void => undefined,
     onPause: (): void => undefined,
     onRestart: (): void => undefined,
   }
 
   event = {
-    onClick: (_: any): void => undefined,
+    onClick: (_: Node<N> | undefined): void => undefined,
   }
 
   showFrameMonitor = false
 
   pixelRatio = 2
 
-  init (config: GraphConfig<N, L>): this {
-    const keys = Object.keys(config).map(key => key as keyof GraphConfig<N, L>)
+  init (config: GraphConfigInterface<N, L>): this {
+    const keys = Object.keys(config).map(key => key as keyof GraphConfigInterface<N, L>)
     keys.forEach(key => {
       if (_isPlainObject(this[key])) this[key] = _merge(this[key], config[key]) as never
       else this[key] = config[key] as never

@@ -1,27 +1,27 @@
 import { Node, Link, InputNode, InputLink } from '@/graph/types'
 
-export class GraphData <N extends Node, L extends Link> {
-  private _nodes: N[] = []
-  private _links: L[] = []
+export class GraphData <N extends InputNode, L extends InputLink> {
+  private _nodes: Node<N>[] = []
+  private _links: Link<N, L>[] = []
 
-  public setData (inputData: { nodes: InputNode[]; links: InputLink[] }): void {
-    const nodes = inputData.nodes.map((n, i) => {
+  public setData (inputNodes: InputNode[], inputLinks: InputLink[]): void {
+    const nodes = inputNodes.map((n, i) => {
       return {
         ...n,
         degree: 0,
         indegree: 0,
         outdegree: 0,
         index: i,
-      }
+      } as Node<N>
     })
 
-    const nodesObj: { [key: string]: Node } = {}
+    const nodesObj: { [key: string]: Node<N> } = {}
     nodes.forEach(n => {
       nodesObj[n.id] = n
     })
 
     // Calculate node outdegree/indegree value
-    inputData.links.forEach(l => {
+    inputLinks.forEach(l => {
       nodesObj[l.source].outdegree += 1
       nodesObj[l.target].indegree += 1
     })
@@ -32,14 +32,14 @@ export class GraphData <N extends Node, L extends Link> {
     })
 
     // Sort nodes by degree value
-    nodes.sort((a, b) => (a.degree ?? 0) - (b.degree ?? 0))
+    nodes.sort((a, b) => (a.degree) - (b.degree ?? 0))
 
     // Put index to node by ascending from 0
     nodes.forEach((n, i) => {
       n.index = i
     })
 
-    const links = inputData.links.map(l => {
+    const links = inputLinks.map(l => {
       const sourceNode = nodesObj[l.source]
       const targetNode = nodesObj[l.target]
 
@@ -49,17 +49,17 @@ export class GraphData <N extends Node, L extends Link> {
         to: targetNode.index,
         source: sourceNode,
         target: targetNode,
-      }
+      } as Link<N, L>
     })
-    this._nodes = nodes as N[]
-    this._links = links as L []
+    this._nodes = nodes
+    this._links = links
   }
 
-  get nodes (): N[] {
+  get nodes (): Node<N>[] {
     return this._nodes
   }
 
-  get links (): L[] {
+  get links (): Link<N, L>[] {
     return this._links
   }
 }

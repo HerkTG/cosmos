@@ -12,14 +12,14 @@ import updatePositionFrag from '@/graph/modules/Points/update-position.frag'
 import { createIndexesBuffer, createQuadBuffer } from '@/graph/modules/Shared/buffer'
 import updateVert from '@/graph/modules/Shared/quad.vert'
 import { defaultConfigValues } from '@/graph/variables'
+import { InputNode, InputLink } from '@/graph/types'
 
 export enum DrawType {
   HIGHLIGHTED = 'highlighted',
   DIMMED = 'dimmed',
   DEFAULT = 'default',
 }
-
-export class Points extends CoreModule {
+export class Points<N extends InputNode, L extends InputLink> extends CoreModule<N, L> {
   public currentPositionFbo: regl.Framebuffer2D | undefined
   public previousPositionFbo: regl.Framebuffer2D | undefined
   public velocityFbo: regl.Framebuffer2D | undefined
@@ -178,7 +178,7 @@ export class Points extends CoreModule {
     this.currentPositionFbo = temp
   }
 
-  public updateHighlighted (forceLink: ForceLink): void {
+  public updateHighlighted (forceLink: ForceLink<N, L>): void {
     const { reglInstance, store } = this
     const { indices, linkFirstIndicesAndAmount } = forceLink
     this.highlightedFbo = createHighlightedBuffer(

@@ -6,13 +6,13 @@ import drawCurveVert from '@/graph/modules/Lines/draw-curve.vert'
 import drawStraightFrag from '@/graph/modules/Lines/draw-straight.frag'
 import drawStraightVert from '@/graph/modules/Lines/draw-straight.vert'
 import { defaultLinkColor, defaultLinkWidth } from '@/graph/variables'
+import { InputNode, InputLink } from '@/graph/types'
 
 export enum LineType {
   STRAIGHT = 'straight',
   CURVE = 'curve'
 }
-
-export class Lines extends CoreModule {
+export class Lines<N extends InputNode, L extends InputLink> extends CoreModule<N, L> {
   private drawStraightCommand: regl.DrawCommand | undefined
   private drawCurveCommand: regl.DrawCommand | undefined
   private colorBuffer: regl.Buffer | undefined

@@ -6,8 +6,9 @@ import updateVert from '@/graph/modules/Shared/quad.vert'
 import fillSpaceFrag from '@/graph/modules/Space/fill-space.frag'
 import fillSpaceVert from '@/graph/modules/Space/fill-space.vert'
 import { defaultConfigValues } from '@/graph/variables'
+import { InputNode, InputLink } from '@/graph/types'
 
-export class Space extends CoreModule {
+export class Space<N extends InputNode, L extends InputLink> extends CoreModule<N, L> {
   public spaceFbo: regl.Framebuffer2D | undefined
   private clearCommand: regl.DrawCommand | undefined
   private fillCommand: regl.DrawCommand | undefined

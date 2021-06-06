@@ -3,8 +3,9 @@ import { CoreModule } from '@/graph/modules/core-module'
 import forceFrag from '@/graph/modules/ForceMouse/force-mouse.frag'
 import { createQuadBuffer } from '@/graph/modules/Shared/buffer'
 import updateVert from '@/graph/modules/Shared/quad.vert'
+import { InputNode, InputLink } from '@/graph/types'
 
-export class ForceMouse extends CoreModule {
+export class ForceMouse<N extends InputNode, L extends InputLink> extends CoreModule<N, L> {
   private runCommand: regl.DrawCommand | undefined
 
   public initPrograms (): void {

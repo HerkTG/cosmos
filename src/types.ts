@@ -7,17 +7,16 @@ export type InputLink = {
   target: string;
 }
 
-export type Node = {
-  id: string;
-  index?: number;
-  degree?: number;
+export type Node<N extends InputNode> = N & {
+  index: number;
+  degree: number;
   outdegree: number;
   indegree: number;
 }
 
-export type Link = {
+export type Link<N extends InputNode, L extends InputLink> = L & {
   from: number;
   to: number;
-  source: Node;
-  target: Node;
+  source: Node<N>;
+  target: Node<N>;
 }
