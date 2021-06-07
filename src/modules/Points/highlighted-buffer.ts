@@ -11,14 +11,20 @@ export function createHighlightedBuffer (
   const initialState = new Float32Array(pointTextureSize * pointTextureSize * 4).fill(0)
   if (indices?.length && linkIndices && pointsWithFirstLinkIndices) {
     for (const index of indices) {
-      const firstLinkIndex = pointsWithFirstLinkIndices[index * 4 + 1] * linksTextureSize + pointsWithFirstLinkIndices[index * 4]
+      const i = pointsWithFirstLinkIndices[index * 4]
+      const j = pointsWithFirstLinkIndices[index * 4 + 1]
       const numLinks = pointsWithFirstLinkIndices[index * 4 + 2]
-      for (let n = 0; n < numLinks; n++) {
-        const c = firstLinkIndex + n
-        const nodeX = linkIndices[c * 4]
-        const nodeY = linkIndices[c * 4 + 1]
-        const nodeId = nodeY * pointTextureSize + nodeX
-        initialState[nodeId * 4 + 0] = 1
+      if (i !== undefined && j !== undefined && numLinks !== undefined) {
+        const firstLinkIndex = j * linksTextureSize + i
+        for (let n = 0; n < numLinks; n++) {
+          const c = firstLinkIndex + n
+          const nodeX = linkIndices[c * 4]
+          const nodeY = linkIndices[c * 4 + 1]
+          if (nodeX !== undefined && nodeY !== undefined) {
+            const nodeId = nodeY * pointTextureSize + nodeX
+            initialState[nodeId * 4 + 0] = 1
+          }
+        }
       }
     }
   }

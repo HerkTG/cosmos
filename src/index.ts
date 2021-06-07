@@ -220,12 +220,14 @@ export class Graph<N extends InputNode, L extends InputLink> {
 
   public selectNodeById (node: Node<N>): void {
     if (!node) return
-    if (typeof node.index === 'undefined') return
     this.points.clickedId = node.index
     this.points.updateHighlighted(this.forceLink)
     const positionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
-    const relativeX = positionPixels[node.index * 4 + 0] / this.config.spaceSize
-    const relativeY = positionPixels[node.index * 4 + 1] / this.config.spaceSize
+    const posX = positionPixels[node.index * 4 + 0]
+    const posY = positionPixels[node.index * 4 + 1]
+    if (posX === undefined || posY === undefined) return
+    const relativeX = posX / this.config.spaceSize
+    const relativeY = posY / this.config.spaceSize
     const x = relativeX * this.store.screenSize[0]
     const y = this.store.screenSize[1] - relativeY * this.store.screenSize[1]
     const scale = 8
@@ -242,15 +244,19 @@ export class Graph<N extends InputNode, L extends InputLink> {
   public getNodePositions (): { [key: string]: { x: number; y: number } } {
     const particlePositionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
     return this.graph.nodes.reduce<{ [key: string]: { x: number; y: number } }>((acc, curr, i) => {
-      acc[curr.id] = {
-        x: particlePositionPixels[i * 4 + 0],
-        y: particlePositionPixels[i * 4 + 1],
+      const posX = particlePositionPixels[i * 4 + 0]
+      const posY = particlePositionPixels[i * 4 + 1]
+      if (posX !== undefined && posY !== undefined) {
+        acc[curr.id] = {
+          x: posX,
+          y: posY,
+        }
       }
       return acc
     }, {})
   }
 
-  public onSelect (selection: number[][] | null): void {
+  public onSelect (selection: [[number, number], [number, number]] | null): void {
     if (selection) {
       const h = this.store.screenSize[1]
       this.store.selectedArea = [[selection[0][0], (h - selection[1][1])], [selection[1][0], (h - selection[0][1])]]

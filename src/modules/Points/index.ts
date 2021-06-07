@@ -39,8 +39,8 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
     const initialState = new Float32Array(pointsTextureSize * pointsTextureSize * 4)
     for (let i = 0; i < numParticles; ++i) {
       const node = nodes[i]
-      initialState[i * 4 + 0] = node.x ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
-      initialState[i * 4 + 1] = node.y ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
+      initialState[i * 4 + 0] = node?.x ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
+      initialState[i * 4 + 1] = node?.y ?? (spaceSize ?? defaultConfigValues.spaceSize) * (Math.random() * (0.505 - 0.495) + 0.495)
     }
 
     // Create position buffer
@@ -113,9 +113,15 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
       attributes: { indexes: createIndexesBuffer(reglInstance, store.pointsTextureSize) },
       uniforms: {
         particleStatus: (_, props: { type: DrawType }) => {
-          if (props.type === DrawType.DEFAULT) return 0
-          else if (props.type === DrawType.DIMMED) return 1
-          else if (props.type === DrawType.HIGHLIGHTED) return 2
+          switch (props.type) {
+          case DrawType.DIMMED:
+            return 1
+          case DrawType.HIGHLIGHTED:
+            return 2
+          case DrawType.DEFAULT:
+          default:
+            return 0
+          }
         },
         positions: () => this.currentPositionFbo,
         selectedPoints: () => this.selectedFbo,

@@ -22,8 +22,12 @@ export class GraphData <N extends InputNode, L extends InputLink> {
 
     // Calculate node outdegree/indegree value
     inputLinks.forEach(l => {
-      nodesObj[l.source].outdegree += 1
-      nodesObj[l.target].indegree += 1
+      const sourceNode = nodesObj[l.source]
+      const targetNode = nodesObj[l.target]
+      if (sourceNode !== undefined && targetNode !== undefined) {
+        sourceNode.outdegree += 1
+        targetNode.indegree += 1
+      }
     })
 
     // Calculate node degree value
@@ -39,18 +43,23 @@ export class GraphData <N extends InputNode, L extends InputLink> {
       n.index = i
     })
 
-    const links = inputLinks.map(l => {
-      const sourceNode = nodesObj[l.source]
-      const targetNode = nodesObj[l.target]
-
-      return {
-        ...l,
-        from: sourceNode.index,
-        to: targetNode.index,
-        source: sourceNode,
-        target: targetNode,
-      } as Link<N, L>
-    })
+    const links = inputLinks
+      .map(l => {
+        const sourceNode = nodesObj[l.source]
+        const targetNode = nodesObj[l.target]
+        if (sourceNode !== undefined && targetNode !== undefined) {
+          return {
+            ...l,
+            from: sourceNode.index,
+            to: targetNode.index,
+            source: sourceNode,
+            target: targetNode,
+          } as Link<N, L>
+        } else {
+          return undefined
+        }
+      })
+      .filter(l => l === undefined) as Link<N, L>[]
     this._nodes = nodes
     this._links = links
   }

@@ -9,7 +9,7 @@ export class Store {
   private alphaTarget = 0
   public transform = mat3.create()
   public backgroundColor: [number, number, number, number] = [0, 0, 0, 0]
-  public screenSize = [0, 0]
+  public screenSize: [number, number] = [0, 0]
   public mousePosition = [0, 0]
   public selectedArea = [[0, 0], [0, 0]]
   public simulationIsRunning = false

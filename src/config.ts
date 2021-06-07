@@ -122,27 +122,27 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
     friction?: number;
     /**
      * On start simulation callback function.
-     * Default value: undefined
+     * Default value: () => undefined
      */
     onStart?: () => void;
     /**
      * On tick simulation callback function.
      * Default value: undefined
      */
-    onTick?: (alpha: number) => void;
+    onTick?: ((alpha?: number) => void) | undefined;
     /**
      * On end simulation callback function.
-     * Default value: undefined
+     * Default value: () => undefined
      */
     onEnd?: () => void;
     /**
      * On pause simulation callback function.
-     * Default value: undefined
+     * Default value: () => undefined
      */
     onPause?: () => void;
     /**
      * On restart simulation callback function.
-     * Default value: undefined
+     * Default value: () => undefined
      */
     onRestart?: () => void;
   };
@@ -154,7 +154,7 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
      * On click callback function.
      * Default value: undefined
      */
-    onClick?: (clickedNode: Node<N> | undefined) => void;
+    onClick?: ((clickedNode?: Node<N> | undefined) => void) | undefined;
   };
 
   /**
@@ -192,14 +192,14 @@ export class GraphConfig<N extends InputNode, L extends InputLink> implements Gr
     repulsionFromMouse: 2,
     friction: 0.85,
     onStart: (): void => undefined,
-    onTick: (_: number): void => undefined,
+    onTick: undefined,
     onEnd: (): void => undefined,
     onPause: (): void => undefined,
     onRestart: (): void => undefined,
   }
 
   event = {
-    onClick: (_: Node<N> | undefined): void => undefined,
+    onClick: undefined,
   }
 
   showFrameMonitor = false

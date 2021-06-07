@@ -14,8 +14,11 @@ export function createSizeBuffer <N extends InputNode> (
   const initialState = new Float32Array(pointTextureSize * pointTextureSize * 4)
 
   for (let i = 0; i < numParticles; ++i) {
-    const size = getValue(nodes[i], sizeAccessor)
-    initialState[i * 4] = +(size ?? defaultNodeSize)
+    const node = nodes[i]
+    if (node) {
+      const size = getValue(node, sizeAccessor)
+      initialState[i * 4] = +(size ?? defaultNodeSize)
+    }
   }
 
   const initialTexture = reglInstance.texture({
