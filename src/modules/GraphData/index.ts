@@ -59,7 +59,7 @@ export class GraphData <N extends InputNode, L extends InputLink> {
           return undefined
         }
       })
-      .filter(l => l === undefined) as Link<N, L>[]
+      .filter(l => l !== undefined) as Link<N, L>[]
     this._nodes = nodes
     this._links = links
   }
