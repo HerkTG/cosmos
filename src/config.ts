@@ -127,9 +127,9 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
     onStart?: () => void;
     /**
      * On tick simulation callback function.
-     * Default value: undefined
+     * Default value: (alpha) => undefined
      */
-    onTick?: ((alpha?: number) => void) | undefined;
+    onTick?: (alpha?: number) => void;
     /**
      * On end simulation callback function.
      * Default value: () => undefined
@@ -152,9 +152,9 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
   event?: {
     /**
      * On click callback function.
-     * Default value: undefined
+     * Default value: (clickedNode) => undefined
      */
-    onClick?: ((clickedNode?: Node<N> | undefined) => void) | undefined;
+    onClick?: (clickedNode?: Node<N> | undefined) => void;
   };
 
   /**
@@ -192,14 +192,16 @@ export class GraphConfig<N extends InputNode, L extends InputLink> implements Gr
     repulsionFromMouse: 2,
     friction: 0.85,
     onStart: (): void => undefined,
-    onTick: undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onTick: (alpha?: number): void => undefined,
     onEnd: (): void => undefined,
     onPause: (): void => undefined,
     onRestart: (): void => undefined,
   }
 
   event = {
-    onClick: undefined,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onClick: (clickedNode?: Node<N>): void => undefined,
   }
 
   showFrameMonitor = false
