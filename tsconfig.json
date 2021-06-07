@@ -9,7 +9,7 @@
       "transform": "@zerollup/ts-transform-paths",
       "exclude": ["*"]
       }],
-    "target": "es2020",
+    "target": "es2019",
     "module": "esnext",
     "moduleResolution": "node",
     "lib": ["es2019", "es2017", "es7", "es6", "dom"],
