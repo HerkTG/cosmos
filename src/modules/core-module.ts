@@ -6,13 +6,13 @@ import { Store } from '@/graph/modules/Store'
 import { Node, Link, InputNode, InputLink } from '@/graph/types'
 
 export class CoreModule<N extends InputNode, L extends InputLink> {
-  readonly reglInstance: regl.Regl
-  readonly config: GraphConfigInterface<Node<N>, Link<N, L>>
-  readonly store: Store
-  readonly data: GraphData<N, L>
-  readonly points: Points<N, L> | undefined
+  public readonly reglInstance: regl.Regl
+  public readonly config: GraphConfigInterface<Node<N>, Link<N, L>>
+  public readonly store: Store
+  public readonly data: GraphData<N, L>
+  public readonly points: Points<N, L> | undefined
 
-  constructor (
+  public constructor (
     reglInstance: regl.Regl,
     config: GraphConfigInterface<Node<N>, Link<N, L>>,
     store: Store,

@@ -20,7 +20,7 @@ import { Zoom } from '@/graph/modules/Zoom'
 import { Node, Link, InputNode, InputLink } from '@/graph/types'
 
 export class Graph<N extends InputNode, L extends InputLink> {
-  config = new GraphConfig<Node<N>, Link<N, L>>()
+  private config = new GraphConfig<Node<N>, Link<N, L>>()
   private canvas: HTMLCanvasElement
   private reglInstance: regl.Regl
   private requestAnimationFrameId = 0
@@ -39,7 +39,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
   private zoom = new Zoom(this.store)
   private frameMonitor = new FrameMonitor()
 
-  constructor (canvas: HTMLCanvasElement, config?: GraphConfigInterface<N, L>) {
+  public constructor (canvas: HTMLCanvasElement, config?: GraphConfigInterface<N, L>) {
     if (config) this.config.init(config)
 
     const w = canvas.clientWidth
@@ -80,19 +80,19 @@ export class Graph<N extends InputNode, L extends InputLink> {
     if (this.config.showFrameMonitor) this.frameMonitor = new FrameMonitor(this.canvas)
   }
 
-  get progress (): number {
+  public get progress (): number {
     return this.store.simulationProgress
   }
 
-  get simulationIsRunning (): boolean {
+  public get simulationIsRunning (): boolean {
     return this.store.simulationIsRunning
   }
 
-  get nodes (): Node<N>[] {
+  public get nodes (): Node<N>[] {
     return this.graph.nodes
   }
 
-  get links (): Link<N, L>[] {
+  public get links (): Link<N, L>[] {
     return this.graph.links
   }
 

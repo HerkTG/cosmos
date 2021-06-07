@@ -3,7 +3,7 @@ import { mat3 } from 'gl-matrix'
 import { Store } from '@/graph/modules/Store'
 
 export class Zoom <Datum> {
-  readonly store: Store
+  public readonly store: Store
   public eventTransform = { k: 1, x: 0, y: 0 }
   public behavior: ZoomBehavior<HTMLCanvasElement, Datum> = zoom<HTMLCanvasElement, Datum>()
     .on('start', () => {
@@ -27,7 +27,7 @@ export class Zoom <Datum> {
 
   public isRunning = false
 
-  constructor (store: Store) {
+  public constructor (store: Store) {
     this.store = store
   }
 }

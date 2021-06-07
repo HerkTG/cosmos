@@ -64,11 +64,11 @@ export class GraphData <N extends InputNode, L extends InputLink> {
     this._links = links
   }
 
-  get nodes (): Node<N>[] {
+  public get nodes (): Node<N>[] {
     return this._nodes
   }
 
-  get links (): Link<N, L>[] {
+  public get links (): Link<N, L>[] {
     return this._links
   }
 }

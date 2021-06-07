@@ -167,19 +167,19 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
 }
 
 export class GraphConfig<N extends InputNode, L extends InputLink> implements GraphConfigInterface<Node<N>, Link<N, L>> {
-  backgroundColor = '#222222'
-  spaceSize = defaultConfigValues.spaceSize
-  nodeColor = defaultNodeColor
-  nodeSize = defaultNodeSize
-  nodeSizeMultiplier = 1
-  linkColor = defaultLinkColor
-  linkWidth = defaultLinkWidth
-  linkWidthMultiplier = 1
-  renderLinks = true
-  curveLinks = false
-  arrowLinks = true
+  public backgroundColor = '#222222'
+  public spaceSize = defaultConfigValues.spaceSize
+  public nodeColor = defaultNodeColor
+  public nodeSize = defaultNodeSize
+  public nodeSizeMultiplier = 1
+  public linkColor = defaultLinkColor
+  public linkWidth = defaultLinkWidth
+  public linkWidthMultiplier = 1
+  public renderLinks = true
+  public curveLinks = false
+  public arrowLinks = true
 
-  simulation = {
+  public simulation = {
     decay: 1000,
     gravity: defaultConfigValues.gravity,
     center: 0,
@@ -199,16 +199,16 @@ export class GraphConfig<N extends InputNode, L extends InputLink> implements Gr
     onRestart: (): void => undefined,
   }
 
-  event = {
+  public event = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onClick: (clickedNode?: Node<N>): void => undefined,
   }
 
-  showFrameMonitor = false
+  public showFrameMonitor = false
 
-  pixelRatio = 2
+  public pixelRatio = 2
 
-  init (config: GraphConfigInterface<N, L>): this {
+  public init (config: GraphConfigInterface<N, L>): this {
     const keys = Object.keys(config).map(key => key as keyof GraphConfigInterface<N, L>)
     keys.forEach(key => {
       if (_isPlainObject(this[key])) this[key] = _merge(this[key], config[key]) as never

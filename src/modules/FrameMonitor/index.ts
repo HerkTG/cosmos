@@ -6,7 +6,7 @@ import { benchCSS } from './css'
 export class FrameMonitor {
   private bench: GLBench | undefined
 
-  constructor (canvas?: HTMLCanvasElement) {
+  public constructor (canvas?: HTMLCanvasElement) {
     if (!canvas) return
     this.destroy()
     const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGL2RenderingContext
