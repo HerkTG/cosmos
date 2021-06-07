@@ -1,13 +1,19 @@
 import { color as d3Color } from 'd3-color'
-import _isFunction from 'lodash/isFunction'
 import regl from 'regl'
 import { NumericAccessor, StringAccessor } from './config'
+
+export function isFunction (value: unknown): value is (...args: unknown[]) => unknown {
+  if (value && typeof value === 'function') {
+    return true
+  }
+  return false
+}
 
 export function getValue<Datum> (
   d: Datum,
   accessor: NumericAccessor<Datum> | StringAccessor<Datum>
-): string | number | null | undefined {
-  if (_isFunction(accessor)) return accessor(d)
+): string | number | null | undefined | unknown {
+  if (isFunction(accessor)) return accessor(d)
   else return accessor
 }
 

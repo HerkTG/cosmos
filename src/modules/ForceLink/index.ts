@@ -1,5 +1,5 @@
-import _groupBy from 'lodash/groupBy'
 import regl from 'regl'
+import { group } from 'd3-array'
 import { CoreModule } from '@/graph/modules/core-module'
 import { forceFrag } from '@/graph/modules/ForceLink/force-spring'
 import { createQuadBuffer } from '@/graph/modules/Shared/buffer'
@@ -23,14 +23,17 @@ export class ForceLink<N extends InputNode, L extends InputLink> extends CoreMod
     const linkBiasAndStrengthState = new Float32Array(linksTextureSize * linksTextureSize * 4)
     const linkDistanceState = new Float32Array(linksTextureSize * linksTextureSize * 4)
 
-    const linksBySourceId = _groupBy(links, d => d.from) // Outcoming links
-    const linksByTargetId = _groupBy(links, d => d.to) // Incoming link
-    const nodeIds = [...Object.keys(linksBySourceId), ...Object.keys(linksByTargetId)]
+    const linksBySourceId = group(links, d => d.from) // Outcoming links
+    const linksByTargetId = group(links, d => d.to) // Incoming link
+    const nodeIds = [
+      ...Array.from(linksBySourceId.keys()),
+      ...Array.from(linksByTargetId.keys()),
+    ]
     this.maxPointDegree = 0
     let linkIndex = 0
     nodeIds.forEach(nodeId => {
-      const outcomingLinks = linksBySourceId[nodeId] ?? []
-      const incomingLinks = linksByTargetId[nodeId] ?? []
+      const outcomingLinks = linksBySourceId.get(nodeId) ?? []
+      const incomingLinks = linksByTargetId.get(nodeId) ?? []
       const pointLinks = [...outcomingLinks, ...incomingLinks]
 
       this.linkFirstIndicesAndAmount[+nodeId * 4 + 0] = linkIndex % linksTextureSize
