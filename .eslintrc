@@ -56,6 +56,7 @@
         "requireLast": false
       }
     }],
+    "@typescript-eslint/member-ordering": "error",
     "max-len": ["warn", { "code": 160, "comments": 160 }],
     "unicorn/filename-case": "error",
     "unicorn/no-for-loop": "error",

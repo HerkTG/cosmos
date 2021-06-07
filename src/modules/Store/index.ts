@@ -6,7 +6,6 @@ export class Store {
   public pointsTextureSize = 0
   public linksTextureSize = 0
   public alpha = 1
-  private alphaTarget = 0
   public transform = mat3.create()
   public backgroundColor: [number, number, number, number] = [0, 0, 0, 0]
   public screenSize: [number, number] = [0, 0]
@@ -15,10 +14,11 @@ export class Store {
   public simulationIsRunning = false
   public simulationProgress = 0
   public selectedIndices: Float32Array = new Float32Array()
-
-  private alphaDecay = (decay: number): number => 1 - Math.pow(ALPHA_MIN, 1 / decay)
+  private alphaTarget = 0
 
   public addAlpha (decay: number): number {
     return (this.alphaTarget - this.alpha) * this.alphaDecay(decay)
   }
+
+  private alphaDecay = (decay: number): number => 1 - Math.pow(ALPHA_MIN, 1 / decay)
 }

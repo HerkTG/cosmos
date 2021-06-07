@@ -177,12 +177,6 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
     })
   }
 
-  private swapFbo (): void {
-    const temp = this.previousPositionFbo
-    this.previousPositionFbo = this.currentPositionFbo
-    this.currentPositionFbo = temp
-  }
-
   public updateHighlighted (forceLink: ForceLink<N, L>): void {
     const { reglInstance, store } = this
     const { indices, linkFirstIndicesAndAmount } = forceLink
@@ -227,5 +221,11 @@ export class Points<N extends InputNode, L extends InputLink> extends CoreModule
     this.highlightedFbo?.destroy()
     this.colorFbo?.destroy()
     this.sizeFbo?.destroy()
+  }
+
+  private swapFbo (): void {
+    const temp = this.previousPositionFbo
+    this.previousPositionFbo = this.currentPositionFbo
+    this.currentPositionFbo = temp
   }
 }

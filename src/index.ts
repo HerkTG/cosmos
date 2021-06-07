@@ -96,7 +96,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
     return this.graph.links
   }
 
-  setConfig (config: GraphConfigInterface<N, L>): void {
+  public setConfig (config: GraphConfigInterface<N, L>): void {
     const prevConfig = _cloneDeep(this.config)
     this.config.init(config)
     if (prevConfig.linkColor !== this.config.linkColor) this.lines.updateColor()
@@ -112,9 +112,102 @@ export class Graph<N extends InputNode, L extends InputLink> {
     if (Object.keys(config).includes('simulation')) this.start()
   }
 
-  setData (nodes: InputNode[], links: InputLink[]): void {
+  public setData (nodes: InputNode[], links: InputLink[]): void {
     this.graph.setData(nodes, links)
     this.update()
+  }
+
+  public findNodesById (id: string): Node<N>[] {
+    return this.graph.nodes.filter(node => node.id.toLowerCase().includes(id.toLowerCase()))
+  }
+
+  public selectNodeById (node: Node<N>): void {
+    if (!node) return
+    this.points.clickedId = node.index
+    this.points.updateHighlighted(this.forceLink)
+    const positionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
+    const posX = positionPixels[node.index * 4 + 0]
+    const posY = positionPixels[node.index * 4 + 1]
+    if (posX === undefined || posY === undefined) return
+    const relativeX = posX / this.config.spaceSize
+    const relativeY = posY / this.config.spaceSize
+    const x = relativeX * this.store.screenSize[0]
+    const y = this.store.screenSize[1] - relativeY * this.store.screenSize[1]
+    const scale = 8
+    select(this.canvas)
+      .transition()
+      .duration(750)
+      .call(this.zoom.behavior.transform, zoomIdentity
+        .translate(0, 0)
+        .scale(scale)
+        .translate(-x + this.store.screenSize[0] / (scale * 2), -y + this.store.screenSize[1] / (scale * 2))
+      )
+  }
+
+  public getNodePositions (): { [key: string]: { x: number; y: number } } {
+    const particlePositionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
+    return this.graph.nodes.reduce<{ [key: string]: { x: number; y: number } }>((acc, curr, i) => {
+      const posX = particlePositionPixels[i * 4 + 0]
+      const posY = particlePositionPixels[i * 4 + 1]
+      if (posX !== undefined && posY !== undefined) {
+        acc[curr.id] = {
+          x: posX,
+          y: posY,
+        }
+      }
+      return acc
+    }, {})
+  }
+
+  public onSelect (selection: [[number, number], [number, number]] | null): void {
+    if (selection) {
+      const h = this.store.screenSize[1]
+      this.store.selectedArea = [[selection[0][0], (h - selection[1][1])], [selection[1][0], (h - selection[0][1])]]
+      this.points.findPoint(false)
+      const pixels = readPixels(this.reglInstance, this.points.selectedFbo as regl.Framebuffer2D)
+      this.store.selectedIndices = pixels
+        .map((pixel, i) => {
+          if (i % 4 === 0 && pixel !== 0) return i / 4
+          else return 404
+        })
+        .filter(d => d !== 404)
+    } else {
+      this.store.selectedIndices = new Float32Array()
+    }
+  }
+
+  public start (alpha = 1): void {
+    if (!this.graph.nodes.length) return
+    this.store.simulationIsRunning = true
+    this.store.alpha = alpha
+    this.store.simulationProgress = 0
+    this.config.simulation.onStart?.()
+    this.stopFrames()
+    this.frame()
+  }
+
+  public pause (): void {
+    this.store.simulationIsRunning = false
+    this.config.simulation.onPause?.()
+  }
+
+  public restart (): void {
+    this.store.simulationIsRunning = true
+    this.config.simulation.onRestart?.()
+  }
+
+  public draw (): void {
+    this.store.simulationIsRunning = false
+    this.stopFrames()
+    this.frame()
+  }
+
+  public destroy (): void {
+    this.stopFrames()
+    this.forceCenter.destroy()
+    this.forceLink.destroy()
+    this.forceManyBody.destroy()
+    this.reglInstance.destroy()
   }
 
   private update (): void {
@@ -214,65 +307,6 @@ export class Graph<N extends InputNode, L extends InputLink> {
     this.config.simulation.onEnd?.()
   }
 
-  public findNodesById (id: string): Node<N>[] {
-    return this.graph.nodes.filter(node => node.id.toLowerCase().includes(id.toLowerCase()))
-  }
-
-  public selectNodeById (node: Node<N>): void {
-    if (!node) return
-    this.points.clickedId = node.index
-    this.points.updateHighlighted(this.forceLink)
-    const positionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
-    const posX = positionPixels[node.index * 4 + 0]
-    const posY = positionPixels[node.index * 4 + 1]
-    if (posX === undefined || posY === undefined) return
-    const relativeX = posX / this.config.spaceSize
-    const relativeY = posY / this.config.spaceSize
-    const x = relativeX * this.store.screenSize[0]
-    const y = this.store.screenSize[1] - relativeY * this.store.screenSize[1]
-    const scale = 8
-    select(this.canvas)
-      .transition()
-      .duration(750)
-      .call(this.zoom.behavior.transform, zoomIdentity
-        .translate(0, 0)
-        .scale(scale)
-        .translate(-x + this.store.screenSize[0] / (scale * 2), -y + this.store.screenSize[1] / (scale * 2))
-      )
-  }
-
-  public getNodePositions (): { [key: string]: { x: number; y: number } } {
-    const particlePositionPixels = readPixels(this.reglInstance, this.points.currentPositionFbo as regl.Framebuffer2D)
-    return this.graph.nodes.reduce<{ [key: string]: { x: number; y: number } }>((acc, curr, i) => {
-      const posX = particlePositionPixels[i * 4 + 0]
-      const posY = particlePositionPixels[i * 4 + 1]
-      if (posX !== undefined && posY !== undefined) {
-        acc[curr.id] = {
-          x: posX,
-          y: posY,
-        }
-      }
-      return acc
-    }, {})
-  }
-
-  public onSelect (selection: [[number, number], [number, number]] | null): void {
-    if (selection) {
-      const h = this.store.screenSize[1]
-      this.store.selectedArea = [[selection[0][0], (h - selection[1][1])], [selection[1][0], (h - selection[0][1])]]
-      this.points.findPoint(false)
-      const pixels = readPixels(this.reglInstance, this.points.selectedFbo as regl.Framebuffer2D)
-      this.store.selectedIndices = pixels
-        .map((pixel, i) => {
-          if (i % 4 === 0 && pixel !== 0) return i / 4
-          else return 404
-        })
-        .filter(d => d !== 404)
-    } else {
-      this.store.selectedIndices = new Float32Array()
-    }
-  }
-
   private onClick (event: MouseEvent): void {
     const h = this.store.screenSize[1]
     this.store.selectedArea = [[event.offsetX, (h - event.offsetY)], [event.offsetX, (h - event.offsetY)]]
@@ -321,39 +355,5 @@ export class Graph<N extends InputNode, L extends InputLink> {
       select(this.canvas)
         .call(this.zoom.behavior.transform, zoomIdentity)
     }
-  }
-
-  public start (alpha = 1): void {
-    if (!this.graph.nodes.length) return
-    this.store.simulationIsRunning = true
-    this.store.alpha = alpha
-    this.store.simulationProgress = 0
-    this.config.simulation.onStart?.()
-    this.stopFrames()
-    this.frame()
-  }
-
-  public pause (): void {
-    this.store.simulationIsRunning = false
-    this.config.simulation.onPause?.()
-  }
-
-  public restart (): void {
-    this.store.simulationIsRunning = true
-    this.config.simulation.onRestart?.()
-  }
-
-  public draw (): void {
-    this.store.simulationIsRunning = false
-    this.stopFrames()
-    this.frame()
-  }
-
-  public destroy (): void {
-    this.stopFrames()
-    this.forceCenter.destroy()
-    this.forceLink.destroy()
-    this.forceManyBody.destroy()
-    this.reglInstance.destroy()
   }
 }
