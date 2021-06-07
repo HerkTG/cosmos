@@ -214,7 +214,8 @@ export class Lines<N extends InputNode, L extends InputLink> extends CoreModule<
     const { reglInstance, config, data: { links } } = this
     const instancePoints: number[][] = []
     links.forEach(l => {
-      instancePoints.push([+(getValue(l, config.linkWidth) ?? defaultLinkWidth)])
+      const linkWidth = getValue(l, config.linkWidth) as number
+      instancePoints.push([linkWidth ?? defaultLinkWidth])
     })
     this.widthBuffer = reglInstance.buffer(instancePoints)
   }

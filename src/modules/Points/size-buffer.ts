@@ -16,8 +16,8 @@ export function createSizeBuffer <N extends InputNode> (
   for (let i = 0; i < numParticles; ++i) {
     const node = nodes[i]
     if (node) {
-      const size = getValue(node, sizeAccessor)
-      initialState[i * 4] = +(size ?? defaultNodeSize)
+      const size = getValue(node, sizeAccessor) as number
+      initialState[i * 4] = size ?? defaultNodeSize
     }
   }
 
