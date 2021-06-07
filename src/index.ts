@@ -340,7 +340,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
     event.preventDefault()
   }
 
-  private resizeCanvas () {
+  private resizeCanvas (): void {
     const prevWidth = +select(this.canvas).attr('width')
     const prevHeight = +select(this.canvas).attr('height')
     const w = this.canvas.clientWidth
