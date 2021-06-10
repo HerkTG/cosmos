@@ -8,6 +8,7 @@
   "repository": "git://github.com/cosmograph-org/cosmos.git",
   "scripts": {
     "build": "rollup -c",
+    "watch": "rollup -c -w",
     "lint": "eslint ./src --ext .ts --ignore-path .gitignore"
   },
   "author": "cosmograph-org",
