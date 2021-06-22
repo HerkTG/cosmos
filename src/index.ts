@@ -196,7 +196,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
     this.config.simulation.onRestart?.()
   }
 
-  public draw (): void {
+  public drawOneFrame (): void {
     this.store.simulationIsRunning = false
     this.stopFrames()
     this.frame()
