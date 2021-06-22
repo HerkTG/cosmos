@@ -118,11 +118,12 @@ export class Graph<N extends InputNode, L extends InputLink> {
     this.update()
   }
 
-  public findNodesById (id: string): Node<N>[] {
-    return this.graph.nodes.filter(node => node.id.toLowerCase().includes(id.toLowerCase()))
+  public findNodeById (id: string): Node<N> | undefined {
+    return this.graph.findNodeById(id)
   }
 
-  public selectNodeById (node: Node<N>): void {
+  public selectNodeById (id: string): void {
+    const node = this.graph.findNodeById(id)
     if (!node) return
     this.points.clickedId = node.index
     this.points.updateHighlighted(this.forceLink)

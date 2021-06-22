@@ -71,4 +71,8 @@ export class GraphData <N extends InputNode, L extends InputLink> {
   public get links (): Link<N, L>[] {
     return this._links
   }
+
+  public findNodeById (id: string): Node<N> | undefined {
+    return this.nodes.find(node => node.id.toLowerCase().includes(id.toLowerCase()))
+  }
 }
