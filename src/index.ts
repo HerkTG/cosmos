@@ -113,6 +113,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
   }
 
   public setData (nodes: InputNode[], links: InputLink[]): void {
+    if (!nodes.length && !links.length) return
     this.graph.setData(nodes, links)
     this.update()
   }

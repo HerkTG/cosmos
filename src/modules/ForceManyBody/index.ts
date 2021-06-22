@@ -123,6 +123,11 @@ export class ForceManyBody<N extends InputNode, L extends InputLink> extends Cor
 
   public destroy (): void {
     this.randomValuesFbo?.destroy()
-    this.levelsFbos.forEach(fbo => fbo?.destroy())
+    this.levelsFbos.forEach(fbo => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((fbo as any)?._framebuffer.framebuffer) {
+        fbo.destroy()
+      }
+    })
   }
 }
