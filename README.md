@@ -24,21 +24,21 @@ import { nodes, edges } from ‘./data’
 
 const canvas = document.querySelector(‘canvas’)
 const config = {
-  graph: {
-    strength: link => link.weight,
+  simulation: {
+    collision: 0.5,
   },
   renderLinks: true,
   linkColor: link => link.linkColor,
   nodeColor: node => node.codeColor,
   event: {
-    click: node => { console.log(‘Clicked node: ‘, node},
+    onClick: node => { console.log(‘Clicked node: ‘, node},
   },
   /* ... */
 }
 
 const graph = new Graph(canvas, config)
 
-graph.setData({ nodes, edges })
+graph.setData(nodes, edges)
 ```
 
 ### Examples
