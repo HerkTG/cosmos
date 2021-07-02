@@ -324,7 +324,7 @@ export class Graph<N extends InputNode, L extends InputLink> {
     this.points.clickedId = selectedIndices[selectedIndices.length - 1] ?? -1
     this.points.updateHighlighted(this.forceLink)
     const clickedParticle = selectedIndices.length ? this.graph.nodes[this.points.clickedId] : undefined
-    this.config.event.onClick?.(clickedParticle)
+    this.config.events.onClick?.(clickedParticle)
   }
 
   private onMouseMove (event: MouseEvent): void {

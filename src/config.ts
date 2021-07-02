@@ -149,7 +149,7 @@ export interface GraphConfigInterface<N extends InputNode, L extends InputLink> 
   /**
    * Events
    */
-  event?: {
+  events?: {
     /**
      * On click callback function.
      * Default value: (clickedNode) => undefined
@@ -199,7 +199,7 @@ export class GraphConfig<N extends InputNode, L extends InputLink> implements Gr
     onRestart: (): void => undefined,
   }
 
-  public event = {
+  public events = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onClick: (clickedNode?: Node<N>): void => undefined,
   }
