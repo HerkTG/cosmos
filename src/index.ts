@@ -360,5 +360,5 @@ export class Graph<N extends InputNode, L extends InputLink> {
   }
 }
 
-export { InputLink, InputNode } from './types'
-export { GraphConfigInterface } from './config'
+export type { InputLink, InputNode, Node, Link } from './types'
+export type { GraphConfigInterface } from './config'
